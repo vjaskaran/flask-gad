@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Run WebCam</title>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+	<h1>Gender and Age Prediction</h1>
+	
+	<div id="container">
+		<img src="{{ url_for('video_feed') }}" id="inputVideo" />
+	</div>
+
+	<br><br><hr><br><br>
+
+	<div>
+		<form action="/" id="myForm" method="POST">
+			<div>
+				<label>Face Detector: </label>
+				<input type="radio" id="haarcascades" name="face_detector" value="1" checked>
+					<label for="haarcascades">Haar Cascades</label>
+				<input type="radio" id="dnn" name="face_detector" value="2">
+					<label for="dnn">DNN</label>
+				<input type="radio" id="mtcnn" name="face_detector" value="3">
+					<label for="mtcnn">MTCNN</label>
+			</div>
+			<div>
+				<label>Age Detector: </label>
+				<input type="radio" id="age1" name="age_detector" value="1" checked>
+					<label for="haarcascades">Age1</label>
+				<input type="radio" id="age2" name="age_detector" value="2">
+					<label for="mtcnn">Age2</label>
+			</div>
+			<div>
+				<label>Gender Detector: </label>
+				<input type="radio" id="gender1" name="gender_detector" value="1" checked>
+					<label for="gender1">Gender1</label>
+				<input type="radio" id="gender2" name="gender_detector" value="2">
+					<label for="gender2">Gender2</label>
+			</div>
+
+			<input type="submit" value="Configure">
+
+		</form>
+	</div>
+	
+
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/styles.css') }}">	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script type="text/javascript">
+		$('#myForm').submit( function(event){
+			event.preventDefault();
+			$.ajax({
+				url: '/config',
+				type: 'POST',
+				data: $('#myForm').serialize(),
+				success: function(response){
+					console.log('config sent! response = ' + response);
+    			},
+    			error: function(error){
+    				console.log('encountered an error = ' + error);
+	    		}
+			});
+		})
+	</script>
+</body>
+
+</html>

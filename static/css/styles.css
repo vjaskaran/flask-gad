@@ -1,0 +1,38 @@
+body {
+    margin: 30px;
+}
+h1 {
+    margin : auto;
+    font-family: sans-serif;
+    color: #666;
+}
+#container {
+	margin: auto;
+	width: 500px;
+	height: 375px;
+	border: 10px #333 solid;
+}
+#inputVideo {
+	width: 500px;
+	height: 375px;
+	background-color: #666;
+}
+#outputVideo {
+    width: 500px;
+    height: 375px;
+    background-color: #666;
+}
+button {
+    margin-top: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    background-color: white;
+    border: 5px solid black;
+}
+button:hover {
+    background-color: yellow;
+}
+button:active {
+    background-color: yellowgreen;
+}
