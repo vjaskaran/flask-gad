@@ -6,7 +6,7 @@
 	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body>
+<body onload="update_values()">
 	<h1>Gender and Age Prediction</h1>
 	
 	<div id="container">
@@ -18,52 +18,114 @@
 	<div>
 		<form action="/" id="myForm" method="POST">
 			<div>
-				<label>Face Detector: </label>
-				<input type="radio" id="haarcascades" name="face_detector" value="1" checked>
-					<label for="haarcascades">Haar Cascades</label>
+				<label>Face Detector: </label><br>
+				<input type="radio" id="none" name="face_detector" value="0" checked>
+					<label for="none">None</label><br>
+				<input type="radio" id="haarcascades" name="face_detector" value="1">
+					<label for="haarcascades">CV-HaarCascades</label><br>
 				<input type="radio" id="dnn" name="face_detector" value="2">
-					<label for="dnn">DNN</label>
+					<label for="dnn">CV-DNN</label><br>
 				<input type="radio" id="mtcnn" name="face_detector" value="3">
-					<label for="mtcnn">MTCNN</label>
+					<label for="mtcnn">MTCNN</label><br>
+				<input type="radio" id="dlib_cnn" name="face_detector" value="4">
+					<label for="dlib_cnn">dlib-CNN</label><br>
+				<input type="radio" id="dlib_hog" name="face_detector" value="5">
+					<label for="dlib_hog">dlib-hog</label><br>
 			</div>
+			<br>
 			<div>
-				<label>Age Detector: </label>
-				<input type="radio" id="age1" name="age_detector" value="1" checked>
-					<label for="haarcascades">Age1</label>
-				<input type="radio" id="age2" name="age_detector" value="2">
-					<label for="mtcnn">Age2</label>
+				<label>Age Detector: </label><br>
+				<input type="radio" id="none" name="age_detector" value="0" checked>
+					<label for="none">None</label><br>
+				<input type="radio" id="age1" name="age_detector" value="1">
+					<label for="age1">CNN-Adience</label><br>
 			</div>
+			<br>
 			<div>
-				<label>Gender Detector: </label>
-				<input type="radio" id="gender1" name="gender_detector" value="1" checked>
-					<label for="gender1">Gender1</label>
-				<input type="radio" id="gender2" name="gender_detector" value="2">
-					<label for="gender2">Gender2</label>
+				<label>Gender Detector: </label><br>
+				<input type="radio" id="none" name="gender_detector" value="0" checked>
+					<label for="none">None</label><br>
+				<input type="radio" id="gender1" name="gender_detector" value="1">
+					<label for="gender1">CNN-Adience</label><br>
 			</div>
-
+			<br>
 			<input type="submit" value="Configure">
 
 		</form>
 	</div>
-	
+	<br><br><hr><br><br>
+	<div>
+		<canvas id="myChart" width="1500" height="1000"></canvas>
+	</div>
 
+	<!-- css -->
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/styles.css') }}">	
+	<!-- jquery -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	<script type="text/javascript">
-		$('#myForm').submit( function(event){
-			event.preventDefault();
-			$.ajax({
-				url: '/config',
-				type: 'POST',
-				data: $('#myForm').serialize(),
-				success: function(response){
-					console.log('config sent! response = ' + response);
-    			},
-    			error: function(error){
-    				console.log('encountered an error = ' + error);
-	    		}
-			});
-		})
+	<!-- chart.js -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.0/chart.min.js"></script>
+	<!-- static js -->
+	<script type="text/javascript" src="{{ url_for('static',filename='js/config.js') }}"></script>
+	<script>
+	    $(document).ready(function () {
+    	    const config = {
+        	    type: 'line',
+            	data: {
+            	    labels: [],
+            	    datasets: [{
+            	        label: "Real Time Frame Rate",
+            	        backgroundColor: 'rgb(255, 99, 132)',
+            	        borderColor: 'rgb(255, 99, 132)',
+            	        data: [],
+            	        fill: false,
+            	    }],
+            	},
+	            options: {
+    	            responsive: false,
+        	        title: {
+            	        display: true,
+                	    text: 'Real-Time FPS(frame per second) Chart with Flask'
+	                },
+    	            tooltips: {
+        	            mode: 'index',
+            	        intersect: false,
+                	},
+	                hover: {
+    	                mode: 'nearest',
+        	            intersect: true
+            	    },
+                	scales: {
+	                    xAxes: [{
+    	                    display: true,
+        	                scaleLabel: {
+            	                display: true,
+                	            labelString: 'Time'
+                    	    }
+	                    }],
+    	                yAxes: [{
+        	                display: true,
+            	            scaleLabel: {
+                	            display: true,
+                    	        labelString: 'Value'
+                        	}
+	                    }]
+    	            }
+        	    }
+	        };
+	        const context = document.getElementById('myChart').getContext('2d');
+			const lineChart = new Chart(context, config);
+	        const source = new EventSource("/fps_feed");
+	        source.onmessage = function (event) {
+    	        const data = JSON.parse(event.data);
+        	    if (config.data.labels.length === 25) {
+            	    config.data.labels.shift();
+                	config.data.datasets[0].data.shift();
+	            }
+    	        config.data.labels.push(data.time);
+        	    config.data.datasets[0].data.push(data.value);
+            	lineChart.update();
+	        }
+    	});
 	</script>
 </body>
 

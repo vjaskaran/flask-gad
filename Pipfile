@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Flask = ">=1.1.2"
+numpy = ">=1.20.1"
+opencv-python = ">=4.5.1.48"
+mtcnn = ">=0.1.0"
+dlib = "*"
+tensorflow = "*"
+flask = "*"
+gunicorn = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
