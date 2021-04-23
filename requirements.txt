@@ -1,9 +1,7 @@
-Flask
+flask
 gunicorn
-Jinja2
-Werkzeug
 numpy
 opencv-python
 mtcnn
 dlib
-tensorflow
+tensorflow-cpu
